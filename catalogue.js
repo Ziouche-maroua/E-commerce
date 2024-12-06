@@ -56,27 +56,33 @@ function addToCart(name, price) {
 function updateCartSummary() {
     const cartList = document.getElementById("cart-list");
     const totalPrice = document.getElementById("total-price");
-    
-    cartList.innerHTML = '';
-    let total = 0;
 
-    cart.forEach((product, index) => {
-        const li = document.createElement("li");
-        li.textContent = `${product.name} - ${product.price}€`;
+    if (cartList && totalPrice) {
+        cartList.innerHTML = '';
+        let total = 0;
 
-        const removeButton = document.createElement("button");
-        removeButton.textContent = "Supprimer";
-        removeButton.className = "remove-btn";
-        removeButton.onclick = () => removeFromCart(index);
+        cart.forEach((product, index) => {
+            const li = document.createElement("li");
+            li.textContent = `${product.name} - ${product.price} DZD`;
 
-        li.appendChild(removeButton);
-        cartList.appendChild(li);
-        
-        total += product.price;
-    });
+            const removeButton = document.createElement("button");
+            removeButton.textContent = "Supprimer";
+            removeButton.className = "remove-btn bg-red-500 text-white ml-4 p-1 rounded";
+            removeButton.onclick = () => {
+                removeFromCart(index);
+                updateCartSummary(); // Ensure cart refreshes immediately after removal
+            };
 
-    totalPrice.textContent = `Total : ${total}€`;
+            li.appendChild(removeButton);
+            cartList.appendChild(li);
+
+            total += product.price;
+        });
+
+        totalPrice.textContent = `Total : ${total} DZD`;
+    }
 }
+
 
 function removeFromCart(index) {
     cart.splice(index, 1);
@@ -94,3 +100,13 @@ function confirmPurchase() {
         document.querySelectorAll(".already-added").forEach(el => el.style.display = 'none');
     }
 }
+
+// Function to initialize cart on the sell page
+function loadCartOnSellPage() {
+    if (window.location.pathname.includes('sell.html')) {
+        updateCartSummary(); // Ensure cart summary is updated on the sell page
+    }
+}
+
+// Ensure the cart is loaded on page load for the sell page
+window.onload = loadCartOnSellPage;

@@ -1,0 +1,40 @@
+.product {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  .product:hover {
+    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+    transform: translateY(-5px);
+  }
+  
+  .already-added {
+    display: none; /* Hidden by default, controlled in JS */
+  }
+  
+  /* Customizing form elements */
+  input[type="file"] {
+    border: 1px solid #ccc;
+    padding: 8px;
+    cursor: pointer;
+  }
+  
+  textarea {
+    resize: vertical;
+  }
+  
+  /* Override for Tailwind class if needed */
+  .hidden {
+    display: none !important; /* Important to ensure JS toggles work */
+  }
+  
+  /* Additional media query for further custom control */
+  @media (max-width: 768px) {
+    .catalogue {
+      grid-template-columns: 1fr;
+    }
+  
+    .navbar {
+      flex-direction: column;
+    }
+  }
+  
