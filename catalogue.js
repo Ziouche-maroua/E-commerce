@@ -1,56 +1,20 @@
-let cart = [];
-
-function addNewProduct() {
-    // Récupérer les valeurs du formulaire
-    const name = document.getElementById("productName").value;
-    const price = parseFloat(document.getElementById("productPrice").value);
-    const description = document.getElementById("productDescription").value;
-    const imageFile = document.getElementById("productImage").files[0];
-
-    // Vérification que tous les champs sont remplis
-    if (!name || !price || !description || !imageFile) {
-        alert("Veuillez remplir tous les champs.");
-        return;
-    }
-
-    // Créer une URL pour l'image
-    const imageUrl = URL.createObjectURL(imageFile);
-
-    // Créer un nouvel élément produit
-    const productDiv = document.createElement("div");
-    productDiv.classList.add("product");
-
-    productDiv.innerHTML = `
-        <img src="${imageUrl}" alt="${name}">
-        <h3>${name}</h3>
-        <p>Prix : ${price}DZD</p>
-        <p>Description : ${description}</p>
-        <button onclick="addToCart('${name}', ${price})">Ajouter au panier</button>
-        <p class="already-added" style="display: none;">Déjà ajouté</p>
-    `;
-
-    // Ajouter le nouveau produit dans la grille de produits
-    document.querySelector(".catalogue").appendChild(productDiv);
-
-    // Réinitialiser le formulaire
-    document.getElementById("productForm").reset();
-}
+// Initialize cart
+let cart = JSON.parse(localStorage.getItem("cart")) || [];
 
 function addToCart(name, price) {
-    const alreadyAdded = cart.some(product => product.name === name);
-
-    if (!alreadyAdded) {
-        cart.push({ name, price });
-        updateCartSummary();
-
-        // Marquer l'article comme déjà ajouté
-        const productElements = document.querySelectorAll(".product");
-        productElements.forEach(product => {
-            if (product.querySelector("h3").textContent === name) {
-                product.querySelector(".already-added").style.display = 'block';
-            }
-        });
+    // Check if the product is already in the cart
+    const existingProduct = cart.find(product => product.name === name);
+    
+    if (existingProduct) {
+        existingProduct.quantity += 1; // Increase quantity if product is already in the cart
+    } else {
+        cart.push({ name, price, quantity: 1 }); // Add new product with quantity 1
     }
+    
+    // Update localStorage with new cart data
+    localStorage.setItem("cart", JSON.stringify(cart));
+    
+    updateCartSummary();
 }
 
 function updateCartSummary() {
@@ -63,29 +27,30 @@ function updateCartSummary() {
 
         cart.forEach((product, index) => {
             const li = document.createElement("li");
-            li.textContent = `${product.name} - ${product.price} DZD`;
+            li.innerHTML = `${product.name} - ${product.price} DZD x ${product.quantity}`;
 
             const removeButton = document.createElement("button");
             removeButton.textContent = "Supprimer";
             removeButton.className = "remove-btn bg-red-500 text-white ml-4 p-1 rounded";
             removeButton.onclick = () => {
                 removeFromCart(index);
-                updateCartSummary(); // Ensure cart refreshes immediately after removal
+                updateCartSummary(); // Refresh cart immediately
             };
 
             li.appendChild(removeButton);
             cartList.appendChild(li);
 
-            total += product.price;
+            total += product.price * product.quantity;
         });
 
-        totalPrice.textContent = `Total : ${total} DZD`;
+        totalPrice.textContent = `Total: ${total} DZD`;
     }
 }
 
-
 function removeFromCart(index) {
     cart.splice(index, 1);
+    // Update localStorage after removing product
+    localStorage.setItem("cart", JSON.stringify(cart));
     updateCartSummary();
 }
 
@@ -93,20 +58,28 @@ function confirmPurchase() {
     if (cart.length === 0) {
         alert("Votre panier est vide.");
     } else {
-        alert("Merci pour votre achat ! Vous avez acheté " + cart.length + " article(s) pour un total de " + document.getElementById("total-price").textContent);
-        cart = [];
-        updateCartSummary();
+        let purchaseDetails = "Merci pour votre achat !\n\n";
+        cart.forEach(product => {
+            purchaseDetails += `${product.name} - ${product.quantity} x ${product.price} DZD\n`;
+        });
+        purchaseDetails += `Total : ${document.getElementById("total-price").textContent}`;
 
-        document.querySelectorAll(".already-added").forEach(el => el.style.display = 'none');
+        alert(purchaseDetails);
+
+        // Clear cart
+        cart = [];
+        // Clear localStorage
+        localStorage.setItem("cart", JSON.stringify(cart));
+        updateCartSummary();
     }
 }
 
-// Function to initialize cart on the sell page
+// Initialize the cart when the sell page is loaded
 function loadCartOnSellPage() {
     if (window.location.pathname.includes('sell.html')) {
-        updateCartSummary(); // Ensure cart summary is updated on the sell page
+        updateCartSummary();
     }
 }
 
-// Ensure the cart is loaded on page load for the sell page
+// Ensure cart is loaded on page load
 window.onload = loadCartOnSellPage;

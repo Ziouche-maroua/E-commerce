@@ -38,3 +38,27 @@
     }
   }
   
+  /* Hover styles for  buttons */
+button {
+  transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+button:hover {
+  background-color: #38a169; /* Slightly darker green */
+  transform: scale(1.05); /* Slight zoom effect */
+  box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2); /* Add shadow effect */
+}
+
+/* Click (active) styles */
+button:active {
+  background-color: #2f855a; /* Even darker green */
+  transform: scale(0.95); /* Slight shrink effect */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15); /* Reduced shadow */
+}
+
+/* Disable button if necessary */
+button:disabled {
+  background-color: #a0aec0; /* Gray color */
+  cursor: not-allowed; /* Disable pointer interaction */
+  opacity: 0.7; /* Dim the appearance */
+}
