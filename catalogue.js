@@ -1,21 +1,33 @@
 // Initialize cart
 let cart = JSON.parse(localStorage.getItem("cart")) || [];
 
-function addToCart(name, price) {
-    // Check if the product is already in the cart
-    const existingProduct = cart.find(product => product.name === name);
-    
+function addToCart(productName, productPrice) {
+    // Check if the product already exists in the cart
+    const existingProduct = cart.find(product => product.name === productName);
+
     if (existingProduct) {
-        existingProduct.quantity += 1; // Increase quantity if product is already in the cart
+        // If the product exists, increment its quantity
+        existingProduct.quantity += 1;
     } else {
-        cart.push({ name, price, quantity: 1 }); // Add new product with quantity 1
+        // If the product doesn't exist, create a new product object
+        const product = {
+            name: productName,
+            price: productPrice,
+            quantity: 1, // Default quantity
+            color: null, // Optional
+            size: null,  // Optional
+        };
+
+        // Add the new product to the cart
+        cart.push(product);
     }
-    
-    // Update localStorage with new cart data
+
+    // Save the updated cart back to localStorage
     localStorage.setItem("cart", JSON.stringify(cart));
-    
-    updateCartSummary();
+
+    alert("Produit ajouté au panier !");
 }
+
 
 function updateCartSummary() {
     const cartList = document.getElementById("cart-list");
@@ -47,32 +59,6 @@ function updateCartSummary() {
     }
 }
 
-function removeFromCart(index) {
-    cart.splice(index, 1);
-    // Update localStorage after removing product
-    localStorage.setItem("cart", JSON.stringify(cart));
-    updateCartSummary();
-}
-
-function confirmPurchase() {
-    if (cart.length === 0) {
-        alert("Votre panier est vide.");
-    } else {
-        let purchaseDetails = "Merci pour votre achat !\n\n";
-        cart.forEach(product => {
-            purchaseDetails += `${product.name} - ${product.quantity} x ${product.price} DZD\n`;
-        });
-        purchaseDetails += `Total : ${document.getElementById("total-price").textContent}`;
-
-        alert(purchaseDetails);
-
-        // Clear cart
-        cart = [];
-        // Clear localStorage
-        localStorage.setItem("cart", JSON.stringify(cart));
-        updateCartSummary();
-    }
-}
 
 // Initialize the cart when the sell page is loaded
 function loadCartOnSellPage() {
@@ -83,3 +69,26 @@ function loadCartOnSellPage() {
 
 // Ensure cart is loaded on page load
 window.onload = loadCartOnSellPage;
+
+function filterProducts() {
+    // Get the search input value and convert to lowercase for case-insensitive matching
+    const searchInput = document.querySelector('.search-bar').value.toLowerCase();
+    
+    // Select all product elements
+    const products = document.querySelectorAll('.product');
+    
+    // Loop through each product and handle visibility based on the search input
+    products.forEach(product => {
+        // Get the product name from the data-name attribute and convert it to lowercase
+        const productName = product.getAttribute('data-name').toLowerCase();
+        
+        // Check if the product name includes the search input
+        if (productName.includes(searchInput)) {
+            product.style.display = 'block';  // Show matching products
+        } else {
+            product.style.display = 'none';   // Hide non-matching products
+        }
+    });
+}
+
+

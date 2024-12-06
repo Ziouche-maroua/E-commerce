@@ -62,3 +62,16 @@ button:disabled {
   cursor: not-allowed; /* Disable pointer interaction */
   opacity: 0.7; /* Dim the appearance */
 }
+
+.search-bar {
+  margin: 0 1rem; /* Equivalent to mx-4 */
+  padding: 0.5rem 1rem; /* Equivalent to py-2 and px-4 */
+  border: 1px solid #d1d5db; /* Light gray border */
+  border-radius: 4px; /* Equivalent to rounded */
+  outline: none; /* Equivalent to focus:outline-none */
+}
+
+.search-bar:focus {
+  border-color: #2563eb; /* Optional: Change border color on focus */
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.3); /* Optional focus effect */
+}
