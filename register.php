@@ -1,53 +1,42 @@
 <?php
 
 include 'config.php';
-session_start();
 
 if(isset($_POST['submit'])){
 
+   $name = mysqli_real_escape_string($conn, $_POST['name']);
    $email = mysqli_real_escape_string($conn, $_POST['email']);
    $pass = mysqli_real_escape_string($conn, md5($_POST['password']));
+   $cpass = mysqli_real_escape_string($conn, md5($_POST['cpassword']));
+   $user_type = $_POST['user_type'];
 
    $select_users = mysqli_query($conn, "SELECT * FROM `users` WHERE email = '$email' AND password = '$pass'") or die('query failed');
 
    if(mysqli_num_rows($select_users) > 0){
-
-      $row = mysqli_fetch_assoc($select_users);
-
-      if($row['user_type'] == 'admin'){
-
-         $_SESSION['admin_name'] = $row['name'];
-         $_SESSION['admin_email'] = $row['email'];
-         $_SESSION['admin_id'] = $row['id'];
-         header('location:admin_page.php');
-
-      }elseif($row['user_type'] == 'user'){
-
-         $_SESSION['user_name'] = $row['name'];
-         $_SESSION['user_email'] = $row['email'];
-         $_SESSION['user_id'] = $row['id'];
-         header('location:home.php');
-
-      }
-
+      $message[] = 'user already exist!';
    }else{
-      $message[] = 'incorrect email or password!';
+      if($pass != $cpass){
+         $message[] = 'confirm password not matched!';
+      }else{
+         mysqli_query($conn, "INSERT INTO `users`(name, email, password, user_type) VALUES('$name', '$email', '$cpass', '$user_type')") or die('query failed');
+         $message[] = 'registered successfully!';
+         header('location:login.php');
+      }
    }
 
 }
 
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
    <meta charset="UTF-8">
    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-   <title>Login</title>
+   <title>Register</title>
    <!-- Tailwind CSS -->
    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 </head>
-<body class="bg-gray-100 min-h-screen flex items-center justify-center">
+<body class="bg-gray-100 min-h-screen flex items-center justify-center mt-5 mb-5">
 
 <?php
 if(isset($message)){
@@ -64,8 +53,15 @@ if(isset($message)){
 
 <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
    <form action="" method="post" class="space-y-6">
-      <h3 class="text-2xl font-bold text-center text-gray-800">Login Now</h3>
+      <h3 class="text-2xl font-bold text-center text-gray-800">Register Now</h3>
       
+      <div>
+         <label for="name" class="block text-gray-600">Name</label>
+         <input type="text" name="name" id="name" 
+                class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring focus:ring-blue-300"
+                placeholder="Enter your name" required>
+      </div>
+
       <div>
          <label for="email" class="block text-gray-600">Email</label>
          <input type="email" name="email" id="email" 
@@ -79,13 +75,29 @@ if(isset($message)){
                 class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring focus:ring-blue-300"
                 placeholder="Enter your password" required>
       </div>
+      
+      <div>
+         <label for="cpassword" class="block text-gray-600">Confirm Password</label>
+         <input type="password" name="cpassword" id="cpassword" 
+                class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring focus:ring-blue-300"
+                placeholder="Confirm your password" required>
+      </div>
+      
+      <div>
+         <label for="user_type" class="block text-gray-600">User Type</label>
+         <select name="user_type" id="user_type" 
+                 class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring focus:ring-blue-300">
+            <option value="user">User</option>
+            <option value="admin">Admin</option>
+         </select>
+      </div>
 
-      <input type="submit" name="submit" value="Login Now" 
+      <input type="submit" name="submit" value="Register Now" 
              class="w-full bg-blue-500 text-white py-3 rounded-lg font-semibold hover:bg-blue-600 cursor-pointer">
       
       <p class="text-center text-gray-600">
-         Don't have an account? 
-         <a href="register.php" class="text-blue-500 hover:underline">Register Now</a>
+         Already have an account? 
+         <a href="login.php" class="text-blue-500 hover:underline">Login Now</a>
       </p>
    </form>
 </div>

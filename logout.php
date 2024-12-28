@@ -1,6 +1,11 @@
 <?php
+
+include 'config.php';
+
 session_start();
-session_destroy(); // Destroy the session to log the user out
-header("Location: login.html"); // Redirect to the login page
-exit;
+session_unset();
+session_destroy();
+
+header('location:login.php');
+
 ?>
