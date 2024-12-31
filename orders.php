@@ -52,7 +52,7 @@ if (!isset($user_id)) {
             <p class="text-gray-600 mb-2"><span class="font-semibold">Address:</span> <?php echo $fetch_orders['adress']; ?></p>
             <p class="text-gray-600 mb-2"><span class="font-semibold">Payment Method:</span> <?php echo $fetch_orders['method']; ?></p>
             <p class="text-gray-600 mb-2"><span class="font-semibold">Your Orders:</span> <?php echo $fetch_orders['total_products']; ?></p>
-            <p class="text-gray-600 mb-2"><span class="font-semibold">Total Price:</span> <span class="text-green-600 font-bold">$<?php echo $fetch_orders['total_price']; ?></span></p>
+            <p class="text-gray-600 mb-2"><span class="font-semibold">Total Price:</span> <span class="text-green-600 font-bold">DZD <?php echo $fetch_orders['total_price']; ?></span></p>
             <p class="text-gray-600">
                 <span class="font-semibold">Payment Status:</span> 
                 <span class="<?php echo $fetch_orders['payment_status'] == 'pending' ? 'text-red-500' : 'text-green-500'; ?>">

@@ -48,7 +48,7 @@ if(isset($_POST['add_to_cart'])){
 <?php include 'header.php'; ?>
 
 <!-- Hero Section -->
-<section class="bg-cover bg-center h-screen md:h-[100vh] flex items-center justify-center" style="background-image: url('images/heroo.jpg');">
+<section class="bg-cover bg-center h-screen md:h-[100vh] flex items-center justify-center" style="background-image: url('images/bg_image.jpeg');">
    <div class="text-center text-white px-6">
       <h1 class="text-4xl md:text-6xl bg-gray-800 bg-opacity-50 py-4 test-white font-bold mb-4">Discover the best products at unbeatable prices.</h1>
       

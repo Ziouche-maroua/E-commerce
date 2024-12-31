@@ -60,7 +60,7 @@ if (isset($_GET['delete'])) {
             <p class="text-gray-600 mb-2"><span class="font-semibold">Email:</span> <?php echo $fetch_orders['email']; ?></p>
             <p class="text-gray-600 mb-2"><span class="font-semibold">Address:</span> <?php echo $fetch_orders['adress']; ?></p>
             <p class="text-gray-600 mb-2"><span class="font-semibold">Total Products:</span> <?php echo $fetch_orders['total_products']; ?></p>
-            <p class="text-gray-600 mb-2"><span class="font-semibold">Total Price:</span> <span class="text-green-600 font-bold">$<?php echo $fetch_orders['total_price']; ?></span></p>
+            <p class="text-gray-600 mb-2"><span class="font-semibold">Total Price:</span> <span class="text-green-600 font-bold">DZD <?php echo $fetch_orders['total_price']; ?></span></p>
             <p class="text-gray-600 mb-4"><span class="font-semibold">Payment Method:</span> <?php echo $fetch_orders['method']; ?></p>
 
             <form action="" method="post" class="space-y-4">

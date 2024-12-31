@@ -38,7 +38,7 @@ if(isset($message)){
 
          <div class="flex items-center space-x-4">
             <div id="menu-btn" class="text-gray-600 hover:text-gray-900 fas fa-bars"></div>
-            <a href="search_page.php" class="text-gray-600 hover:text-gray-900 fas fa-search"></a>
+           
             <div id="user-btn" class="text-gray-600 cursor-pointer hover:text-gray-900 fas fa-user"></div>
             <?php
                $select_cart_number = mysqli_query($conn, "SELECT * FROM `cart` WHERE user_id = '$user_id'") or die('query failed');

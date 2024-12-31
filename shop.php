@@ -86,7 +86,7 @@ if(isset($_POST['submit'])) {
             <img class="w-full h-48 object-cover" src="uploaded_img/<?php echo $fetch_products['image']; ?>" alt="">
             <div class="p-4">
                <h3 class="text-xl font-semibold"><?php echo $fetch_products['name']; ?></h3>
-               <p class="text-gray-500 mt-1">$<?php echo $fetch_products['price']; ?>/-</p>
+               <p class="text-gray-500 mt-1">DZD <?php echo $fetch_products['price']; ?></p>
                <input type="number" min="1" name="product_quantity" value="1" class="mt-4 border rounded-lg px-2 py-1 w-full">
                <input type="hidden" name="product_name" value="<?php echo $fetch_products['name']; ?>">
                <input type="hidden" name="product_price" value="<?php echo $fetch_products['price']; ?>">
