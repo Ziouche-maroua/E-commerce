@@ -28,6 +28,12 @@ if(isset($_POST['add_to_cart'])){
 
 }
 
+// Handle the search functionality
+$search_item = '';
+if(isset($_POST['submit'])) {
+   $search_item = $_POST['search'];
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -36,30 +42,46 @@ if(isset($_POST['add_to_cart'])){
    <meta charset="UTF-8">
    <meta http-equiv="X-UA-Compatible" content="IE=edge">
    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-   <title>shop</title>
+   <title>Shop</title>
 
    <!-- font awesome cdn link  -->
    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
-    <!-- Tailwind CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-
+   <!-- Tailwind CSS -->
+   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 </head>
 <body>
-   
+
 <?php include 'header.php'; ?>
 
+<!-- Search Form Section -->
+<section class="search-form p-4">
+   <form action="" method="post" class="flex justify-center items-center gap-4">
+      <input type="text" name="search" value="<?php echo $search_item; ?>" placeholder="Search products..." class="w-full max-w-md p-3 rounded-lg border-2 border-gray-300">
+      <input type="submit" name="submit" value="Search" class="btn px-6 py-3 bg-blue-600 text-white rounded-lg cursor-pointer hover:bg-blue-700 transition duration-200">
+   </form>
+</section>
+
+
+
+<!-- Products Section -->
 <section class="products py-12 bg-gray-100">
 
    <h1 class="text-4xl font-bold text-center mb-8">Latest Products</h1>
 
    <div class="box-container grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
 
-      <?php  
+   <?php  
+      // Modify the product query based on the search term
+      if ($search_item != '') {
+         $select_products = mysqli_query($conn, "SELECT * FROM `products` WHERE name LIKE '%{$search_item}%'") or die('query failed');
+      } else {
          $select_products = mysqli_query($conn, "SELECT * FROM `products`") or die('query failed');
-         if(mysqli_num_rows($select_products) > 0){
-            while($fetch_products = mysqli_fetch_assoc($select_products)){
-      ?>
+      }
+      
+      if(mysqli_num_rows($select_products) > 0){
+         while($fetch_products = mysqli_fetch_assoc($select_products)){
+   ?>
          <form action="" method="post" class="box bg-white shadow-md rounded-lg overflow-hidden">
             <img class="w-full h-48 object-cover" src="uploaded_img/<?php echo $fetch_products['image']; ?>" alt="">
             <div class="p-4">
@@ -75,15 +97,14 @@ if(isset($_POST['add_to_cart'])){
       <?php
          }
       }else{
-         echo '<p class="col-span-full text-center text-gray-500">No products added yet!</p>';
+         echo '<p class="col-span-full text-center text-gray-500">No products found!</p>';
       }
       ?>
    </div>
 
 </section>
 
-
-<!-- custom js file link  -->
+<!-- Custom JS file link -->
 <script src="js/script.js"></script>
 
 </body>
