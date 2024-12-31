@@ -32,6 +32,7 @@ if(isset($message)){
          <nav class="space-x-4">
             <a href="home.php" class="text-gray-600 hover:text-white">home</a>
             <a href="shop.php" class="text-gray-600 hover:text-white">shop</a>
+            <a href="orders.php" class="text-gray-600 hover:text-white">orders</a>
             <a href="contact.php" class="text-gray-600 hover:text-white">contact</a>
          </nav>
 

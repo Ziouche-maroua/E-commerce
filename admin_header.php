@@ -25,7 +25,7 @@ if(isset($message)){
    <nav class="navbar space-x-6 text-lg">
       <a href="admin_page.php" class="hover:text-blue-400">home</a>
       <a href="admin_products.php" class="hover:text-blue-400">products</a>
-     
+     <a href="admin_orders.php" class="hover:text-blue-400">orders</a>
       <a href="admin_users.php" class="hover:text-blue-400">users</a>
       <a href="admin_contacts.php" class="hover:text-blue-400">messages</a>
    </nav>
