@@ -44,7 +44,7 @@ if(isset($_GET['delete'])){
    <div class="box-container grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
 
       <?php
-         $select_users = mysqli_query($conn, "SELECT * FROM `users`") or die('query failed');
+         $select_users = mysqli_query($conn, "SELECT * FROM `users` WHERE user_type != 'admin' ") or die('query failed');
          while($fetch_users = mysqli_fetch_assoc($select_users)){
       ?>
       <div class="box bg-white rounded-lg shadow-lg p-6">
