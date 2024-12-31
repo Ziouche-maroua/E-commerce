@@ -2,11 +2,11 @@
 
 include 'config.php';
 
-
 session_start();
 
 $user_id = $_SESSION['user_id'];
 
+// Check if user is logged in
 if(!isset($user_id)){
    header('location:login.php');
 }
@@ -18,15 +18,45 @@ if(isset($_POST['update_cart'])){
    $message[] = 'cart quantity updated!';
 }
 
+// Delete a single item from the cart
 if(isset($_GET['delete'])){
    $delete_id = $_GET['delete'];
    mysqli_query($conn, "DELETE FROM `cart` WHERE id = '$delete_id'") or die('query failed');
    header('location:cart.php');
 }
 
+// Delete all items from the cart
 if(isset($_GET['delete_all'])){
    mysqli_query($conn, "DELETE FROM `cart` WHERE user_id = '$user_id'") or die('query failed');
    header('location:cart.php');
+}
+
+// Handling cart using cookies if the user is not logged in
+if(!isset($user_id)) {
+    // If the cart cookie doesn't exist, initialize it
+    if (!isset($_COOKIE['cart'])) {
+        $cart_items = [];
+        setcookie('cart', json_encode($cart_items), time() + (86400 * 30), "/"); // 30 days expiry
+    } else {
+        $cart_items = json_decode($_COOKIE['cart'], true);
+    }
+
+    // Update the cart in cookies
+    if (isset($_POST['update_cart'])) {
+        $cart_id = $_POST['cart_id'];
+        $cart_quantity = $_POST['cart_quantity'];
+
+        foreach ($cart_items as &$item) {
+            if ($item['cart_id'] == $cart_id) {
+                $item['quantity'] = $cart_quantity;
+                break;
+            }
+        }
+
+        // Update the cookie with the new cart data
+        setcookie('cart', json_encode($cart_items), time() + (86400 * 30), "/");
+        $message[] = 'cart quantity updated!';
+    }
 }
 
 ?>
@@ -42,8 +72,8 @@ if(isset($_GET['delete_all'])){
    <!-- font awesome cdn link  -->
    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
-    <!-- Tailwind CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+   <!-- Tailwind CSS -->
+   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 
 </head>
 <body>
@@ -63,9 +93,12 @@ if(isset($_GET['delete_all'])){
 
       <?php
          $grand_total = 0;
-         $select_cart = mysqli_query($conn, "SELECT * FROM `cart` WHERE user_id = '$user_id'") or die('query failed');
-         if(mysqli_num_rows($select_cart) > 0){
-            while($fetch_cart = mysqli_fetch_assoc($select_cart)){   
+
+         // If the user is logged in, get the cart from the database
+         if(isset($user_id)) {
+            $select_cart = mysqli_query($conn, "SELECT * FROM `cart` WHERE user_id = '$user_id'") or die('query failed');
+            if(mysqli_num_rows($select_cart) > 0){
+               while($fetch_cart = mysqli_fetch_assoc($select_cart)){   
       ?>
       <div class="box bg-white shadow-md rounded-lg overflow-hidden">
          <a href="cart.php?delete=<?php echo $fetch_cart['id']; ?>" class="fas fa-times text-red-500 hover:text-red-600 cursor-pointer" onclick="return confirm('delete this from cart?');"></a>
@@ -84,8 +117,35 @@ if(isset($_GET['delete_all'])){
       <?php
       $grand_total += $sub_total;
          }
-      }else{
+      } else {
          echo '<p class="col-span-full text-center text-gray-500">Your cart is empty</p>';
+      }
+
+      // If the user is not logged in, get the cart from cookies
+      } else {
+         if(count($cart_items) > 0) {
+            foreach($cart_items as $item) {
+                ?>
+                <div class="box bg-white shadow-md rounded-lg overflow-hidden">
+                   <a href="cart.php?delete=<?php echo $item['cart_id']; ?>" class="fas fa-times text-red-500 hover:text-red-600 cursor-pointer" onclick="return confirm('delete this from cart?');"></a>
+                   <img src="uploaded_img/<?php echo $item['image']; ?>" alt="" class="w-full h-48 object-cover">
+                   <div class="p-4">
+                      <div class="name font-semibold text-lg"><?php echo $item['name']; ?></div>
+                      <div class="price text-gray-500 mt-2">DZD <?php echo $item['price']; ?></div>
+                      <form action="" method="post" class="mt-4">
+                         <input type="hidden" name="cart_id" value="<?php echo $item['cart_id']; ?>">
+                         <input type="number" min="1" name="cart_quantity" value="<?php echo $item['quantity']; ?>" class="border border-gray-300 rounded-lg w-full px-4 py-2">
+                         <input type="submit" name="update_cart" value="update" class="option-btn bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-lg mt-2">
+                      </form>
+                      <div class="sub-total mt-4 text-gray-700">Sub Total: <span class="font-bold">DZD <?php echo $sub_total = ($item['quantity'] * $item['price']); ?></span></div>
+                   </div>
+                </div>
+                <?php
+                $grand_total += $sub_total;
+            }
+         } else {
+            echo '<p class="col-span-full text-center text-gray-500">Your cart is empty</p>';
+         }
       }
       ?>
    </div>
@@ -104,13 +164,7 @@ if(isset($_GET['delete_all'])){
 
 </section>
 
-
-
-
-
-
-
-<!-- custom js file link  -->
+<!-- custom js file link -->
 <script src="js/script.js"></script>
 
 </body>
