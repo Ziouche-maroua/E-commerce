@@ -25,9 +25,10 @@ if(isset($_POST['add_product'])){
       $message[] = 'product name already added';
    }else{
       $add_product_query = mysqli_query($conn, "INSERT INTO `products`(name, price, image) VALUES('$name', '$price', '$image')") or die('query failed');
+     
 
       if($add_product_query){
-         if($image_size > 2000000){
+         if($image_size > 5000000){
             $message[] = 'image size is too large';
          }else{
             move_uploaded_file($image_tmp_name, $image_folder);
@@ -48,6 +49,18 @@ if(isset($_GET['delete'])){
    header('location:admin_products.php');
 }
 
+// if (isset($_POST['add_product'])) {
+//    $name = mysqli_real_escape_string($conn, $_POST['name']);
+//    $price = $_POST['price'];
+//    $image = $_FILES['image']['name'];
+//    $image_tmp_name = $_FILES['image']['tmp_name'];
+//    $image_size = $_FILES['image']['size'];
+//    $image_error = $_FILES['image']['error'];
+//    $image_folder = 'uploaded_img/' . time() . '_' . $image;
+// }
+ 
+
+  
 if(isset($_POST['update_product'])){
 
    $update_p_id = $_POST['update_p_id'];
@@ -63,7 +76,7 @@ if(isset($_POST['update_product'])){
    $update_old_image = $_POST['update_old_image'];
 
    if(!empty($update_image)){
-      if($update_image_size > 2000000){
+      if($update_image_size > 7000000){
          $message[] = 'image file size is too large';
       }else{
          mysqli_query($conn, "UPDATE `products` SET image = '$update_image' WHERE id = '$update_p_id'") or die('query failed');
@@ -75,6 +88,8 @@ if(isset($_POST['update_product'])){
    header('location:admin_products.php');
 
 }
+
+
 
 ?>
 
@@ -128,10 +143,10 @@ if(isset($_POST['update_product'])){
       <div class="box bg-white rounded-lg shadow-lg p-6">
          <img src="uploaded_img/<?php echo $fetch_products['image']; ?>" alt="" class="w-full h-48 object-cover rounded-lg mb-4">
          <div class="name font-semibold text-lg mb-2"><?php echo $fetch_products['name']; ?></div>
-         <div class="price text-gray-700 mb-4">$<?php echo $fetch_products['price']; ?>/-</div>
+         <div class="price text-gray-700 mb-4">DZD <?php echo $fetch_products['price']; ?></div>
          <div class="flex space-x-4">
             <a href="admin_products.php?update=<?php echo $fetch_products['id']; ?>" class="option-btn bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg">Update</a>
-            <a href="admin_products.php?delete=<?php echo $fetch_products['id']; ?>" class="delete-btn bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg" onclick="return confirm('Delete this product?');">Delete</a>
+            <a href="admin_products.php?delete=<?php echo $fetch_products['id']; ?>" class="delete-btn bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg"  >Delete</a>
          </div>
       </div>
       <?php
@@ -159,9 +174,9 @@ if(isset($_POST['update_product'])){
       <img src="uploaded_img/<?php echo $fetch_update['image']; ?>" alt="" class="w-full h-48 object-cover rounded-lg mb-4">
       <input type="text" name="update_name" value="<?php echo $fetch_update['name']; ?>" class="box w-full p-3 border border-gray-300 rounded-lg mb-4" required placeholder="Enter product name">
       <input type="number" name="update_price" value="<?php echo $fetch_update['price']; ?>" min="0" class="box w-full p-3 border border-gray-300 rounded-lg mb-4" required placeholder="Enter product price">
-      <input type="file" class="box w-full p-3 border border-gray-300 rounded-lg mb-4" name="update_image" accept="image/jpg, image/jpeg, image/png">
+      <input type="file" class="box w-full p-3 border border-gray-300 rounded-lg mb-4" name="update_image" accept="image/jpg, image/jpeg, image/png, image/webp">
       <input type="submit" value="Update" name="update_product" class="btn w-full bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 rounded-lg cursor-pointer">
-      <input type="reset" value="Cancel" id="close-update" class="btn w-full bg-gray-300 hover:bg-gray-400 text-gray-800 px-6 py-3 rounded-lg mt-4 cursor-pointer">
+      <input type="reset" value="Cancel" id="close-update"  onclick="window.location.href='admin_products.php';" class="btn w-full bg-gray-300 hover:bg-gray-400 text-gray-800 px-6 py-3 rounded-lg mt-4 cursor-pointer">
    </form>
    <?php
          }
