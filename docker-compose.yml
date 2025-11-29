@@ -1,29 +1,74 @@
 services:
-  web:
-    build: .
-    container_name: php-app
+
+  nginx:
+    image: nginx:alpine
+    container_name: nginx-lb
     ports:
-      - "8080:80"
+      - "80:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - web1
+      - web2
+      - web3
+    networks:
+      - app-network
+
+  # PHP App Instance 1
+  web1:
+    build: .
+    container_name: php-app-1
     volumes:
       - ./:/var/www/html
     environment:
       - DB_HOST=db
       - DB_USER=root
       - DB_PASSWORD=secret
-      - DB_NAME=shop_db        
+      - DB_NAME=shop_db
     depends_on:
       - db
     networks:
       - app-network
 
+  # PHP App Instance 2
+  web2:
+    build: .
+    container_name: php-app-2
+    volumes:
+      - ./:/var/www/html
+    environment:
+      - DB_HOST=db
+      - DB_USER=root
+      - DB_PASSWORD=secret
+      - DB_NAME=shop_db
+    depends_on:
+      - db
+    networks:
+      - app-network
+
+  # PHP App Instance 3
+  web3:
+    build: .
+    container_name: php-app-3
+    volumes:
+      - ./:/var/www/html
+    environment:
+      - DB_HOST=db
+      - DB_USER=root
+      - DB_PASSWORD=secret
+      - DB_NAME=shop_db
+    depends_on:
+      - db
+    networks:
+      - app-network
+
+  # MySQL Database (shared by all instances)
   db:
     image: mysql:8.0
     container_name: mysql-db
     environment:
       MYSQL_ROOT_PASSWORD: secret
-      MYSQL_DATABASE: shop_db   
-      MYSQL_USER: dbuser
-      MYSQL_PASSWORD: dbpass
+      MYSQL_DATABASE: shop_db
     ports:
       - "3306:3306"
     volumes:
